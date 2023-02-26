@@ -14,6 +14,7 @@ from Antarctica import Antarctica
 
 if __name__ == "__main__":
     use_case = None
+    filename = None
     opts, args = getopt.getopt(sys.argv[1:], '-f:-t:-v', ['--filepath=', 'target_use_case=', 'version'])
     for opt_name, opt_value in opts:
         if opt_name in ('-f', '--filepath'):
@@ -23,7 +24,7 @@ if __name__ == "__main__":
         if opt_name in ('-v', '--version'):
             print("[*] Version is ", cons.CURRENT_VERSION)
     if not filename:
-        print("ERROR:You have to provide full filepath by -f [filepath]")
+        print("ERROR:你必须通过 -f [filepath]来提供路径")
     else:
         ant = Antarctica(filename, use_case)
         ant.run_all()

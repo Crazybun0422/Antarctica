@@ -28,3 +28,4 @@ class AnalyzerInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def statistic(self):
         pass
+
