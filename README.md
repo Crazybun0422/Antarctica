@@ -1,4 +1,5 @@
 # Antarctica
+日志分析工具集合
 ## 代码说明：
 ````
 E:.
@@ -25,19 +26,35 @@ E:.
             Template_Analysis.py    日志分析模板类
             __init__.py
 ````
-## 日志筛选逻辑表达式示例：
-第10列为200（从0列开始）
+## 启动命令行
+-f filepath（日志文件目录）  
+
+-t 匹配正则
+```
+python.exe GameStart.py -f "E:\FUCK_LOG\iis2023-02-17_w14.log" -t "(C10==200)&&(C3==GET)&&(C4 %%%% ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)"
+```
+### 日志筛选逻辑表达式示例：
+#### 1.第10列为200（从0列开始）
 ```
 C10==200
 ```
-&&表示与
-||表示或
-%%表示模糊匹配正则
-—————*特别注意windows需要使用%%来代表一个%所以在windows命令行配置时需要写%%%%_____________*
+==表示等于 
+
+!=表示不等于
+
+!表示非
+
+&&表示与  
+
+||表示或  
+
+%%表示模糊匹配正则  
+
+*特别注意windows需要使用%%来代表一个%所以在windows命令行配置时需要写%%%%*
 ````
 (C10==200)&&(C3==GET)&&(C4 %% ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)
 ````
-代表第10列等于200第三列等于GET第四列匹配：
+#### 2.代表第10列等于200第三列等于GET第四列匹配：
 ```
 ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$
 ```

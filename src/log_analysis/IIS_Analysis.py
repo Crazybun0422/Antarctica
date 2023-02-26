@@ -15,6 +15,18 @@ KEY_DATA = "#Software: Microsoft Internet Information Services"
 from tabulate import tabulate
 from alg import MatchAna
 
+default_keys = {'date': True,
+                'time': True,
+                's-ip': True,
+                'cs-method': True,
+                'cs-uri-stem': True,
+                'cs-uri-query': True,
+                's-port': True,
+                'cs-username:': True,
+                'c-ip': True,
+                'cs(User-Agent)': True,
+                'sc-status': True}
+
 
 def g_dict(node: list):
     table = {}
@@ -73,7 +85,7 @@ class IISAnalyzer(AnalyzerInterface):
                         if not self.use_case:
                             self.use_case = input("请输入筛选日志的字符串：\r\n例如(C0==2023-02-17)and("
                                                   "C1==08:46:38)代表第一列==2023-02-17，第二列==08:46:38来进行筛选同时你可以用正则匹配，\r\n"
-                                                  "如C3 like ^10\\.115\\.98\\.\\d{1,"
+                                                  "如C3 %% ^10\\.115\\.98\\.\\d{1,"
                                                   "3}$来表示匹配10.115.98.网段的IP，具体根据上面提供的日志列号来匹配。\r\n")
                         print("输出的表达式为:", self.use_case)
                         print("分析开始...")
@@ -90,7 +102,7 @@ class IISAnalyzer(AnalyzerInterface):
                                 csv.write(node)
                                 print(node)
                         except Exception as e:
-                            print(e)
+                            print("日志不完整:", node, e)
         return
 
     def statistic(self):

@@ -4,6 +4,7 @@ import re
 op_map = {
     "%%": lambda x, y: re.match(y, x) is not None,
     "==": lambda x, y: x == y,
+    "!=": lambda x, y: x != y,
     "||": lambda x, y: x or y,
     "&&": lambda x, y: x and y,
     "!": lambda x: not x,
@@ -11,12 +12,13 @@ op_map = {
     "(": None,
 }
 # 二元操作符号
-opr_2_list = ["&&", "||", "%%", "=="]
+opr_2_list = ["&&", "||", "%%", "==", "!="]
 
 
 def db_p(ch, mch_, opr, temp, tokens, input_str, index):
     if ch == mch_:
         tokens.append(temp)
+        temp = ''
         if input_str[index + 1] == ch:
             tokens.append(opr)
         else:
@@ -56,7 +58,11 @@ def tokenize(input_str):
         elif ch == '!':
             tokens.append(temp)
             temp = ""
-            tokens.append(ch)
+            if input_str[index + 1] == '=':
+                tokens.append('!=')
+                index += 1
+            else:
+                tokens.append(ch)
         elif ch != '\'' and ch != '\"':
             temp += ch
         index += 1
@@ -68,7 +74,7 @@ def tokenize(input_str):
     return tokens
 
 
-# print(tokenize('(C0==200)&&(C3==GET)&&(C4 like ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)'))
+print(tokenize('(C0!=200)&&(C3!=GET)&&!(C4 %% ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)'))
 
 
 def opr_calc_value(op_stack, value_stack, pop_left=True):
@@ -80,8 +86,8 @@ def opr_calc_value(op_stack, value_stack, pop_left=True):
             value_stack.append({"take": False, "value": op_map[op](left, right)})
     if pop_left:
         op_stack.pop()  # 弹出左括号
-    if op_stack and op_stack[-1] == "not":
-        value_stack.append({"take": False, "value": not value_stack.pop()})
+    if op_stack and op_stack[-1] == "!":
+        value_stack.append({"take": False, "value": not value_stack.pop()["value"]})
         op_stack.pop()  # 弹出 not
 
 
@@ -117,9 +123,7 @@ def evaluate_expression(conditions, value_dict):
     # 返回最终结果
     return value_stack[0]["value"]
 
-
 # expression_dict = '(C0==200)&&(C3==GET)&&(C4 %% ^/Reg/Content/scripts/app/SwfuploadContractFJ3\\.js$)'
-# # expression_dict = '((type == "human") or not (type == "animal"))'
 # value_dict = {'C0': '2023-02-17', 'C1': '08:47:34', 'C2': '10.115.98.108',
 #               'C3': 'GET', 'C4': '/YSZJJG/Archive',
 #               'C5': 'caseID=2302150001_ywfj&sAction=edit&showMode=file&imagebar=true',
