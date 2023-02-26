@@ -68,7 +68,7 @@ def tokenize(input_str):
     return tokens
 
 
-print(tokenize('(C0==200)&&(C3==GET)&&(C4 like ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)'))
+# print(tokenize('(C0==200)&&(C3==GET)&&(C4 like ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)'))
 
 
 def opr_calc_value(op_stack, value_stack, pop_left=True):
@@ -118,14 +118,14 @@ def evaluate_expression(conditions, value_dict):
     return value_stack[0]["value"]
 
 
-expression_dict = '(C0==200)&&(C3==GET)&&(C4 %% ^/Reg/Content/scripts/app/SwfuploadContractFJ3\\.js$)'
-# expression_dict = '((type == "human") or not (type == "animal"))'
-value_dict = {'C0': '2023-02-17', 'C1': '08:47:34', 'C2': '10.115.98.108',
-              'C3': 'GET', 'C4': '/YSZJJG/Archive',
-              'C5': 'caseID=2302150001_ywfj&sAction=edit&showMode=file&imagebar=true',
-              'C6': '881', 'C7': '-', 'C8': '218.87.91.42',
-              'C9': 'Mozilla/5.0+(Windows+NT+10.0;+WOW64;+Trident/7.0;+rv:11.0)+like+Gecko',
-              'C10': '200', 'C11': '0', 'C12': '0', 'C13': '28'}
-
-result = evaluate_expression(tokenize(expression_dict), value_dict)
-print(result)  # True
+# expression_dict = '(C0==200)&&(C3==GET)&&(C4 %% ^/Reg/Content/scripts/app/SwfuploadContractFJ3\\.js$)'
+# # expression_dict = '((type == "human") or not (type == "animal"))'
+# value_dict = {'C0': '2023-02-17', 'C1': '08:47:34', 'C2': '10.115.98.108',
+#               'C3': 'GET', 'C4': '/YSZJJG/Archive',
+#               'C5': 'caseID=2302150001_ywfj&sAction=edit&showMode=file&imagebar=true',
+#               'C6': '881', 'C7': '-', 'C8': '218.87.91.42',
+#               'C9': 'Mozilla/5.0+(Windows+NT+10.0;+WOW64;+Trident/7.0;+rv:11.0)+like+Gecko',
+#               'C10': '200', 'C11': '0', 'C12': '0', 'C13': '28'}
+#
+# result = evaluate_expression(tokenize(expression_dict), value_dict)
+# print(result)  # True

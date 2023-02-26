@@ -79,6 +79,7 @@ class IISAnalyzer(AnalyzerInterface):
                         print("分析开始...")
                         csv = CSVWriter(keys)
                         conditions = MatchAna.tokenize(self.use_case)
+                        print(conditions)
                         break
 
                 for node_list in [line.split(" ") for line in log_lines]:
