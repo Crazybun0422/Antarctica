@@ -48,11 +48,10 @@ C10==200
 
 ||表示或  
 
-%%表示模糊匹配正则  
+@@表示模糊匹配正则  
 
-*特别注意windows需要使用%%来代表一个%所以在windows命令行配置时需要写%%%%*
 ````
-(C10==200)&&(C3==GET)&&(C4 %% ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)
+(C10==200)&&(C3==GET)&&(C4 @@ ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)
 ````
 #### 2.代表第10列等于200第三列等于GET第四列匹配：
 ```

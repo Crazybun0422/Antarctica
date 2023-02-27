@@ -2,7 +2,7 @@ import re
 
 # 定义操作符映射表
 op_map = {
-    "%%": lambda x, y: re.match(y, x) is not None,
+    "@@": lambda x, y: re.match(y, x) is not None,
     "==": lambda x, y: x == y,
     "!=": lambda x, y: x != y,
     "||": lambda x, y: x or y,
@@ -12,7 +12,7 @@ op_map = {
     "(": None,
 }
 # 二元操作符号
-opr_2_list = ["&&", "||", "%%", "==", "!="]
+opr_2_list = ["&&", "||", "@@", "==", "!="]
 
 
 def db_p(ch, mch_, opr, temp, tokens, input_str, index):
@@ -55,6 +55,10 @@ def tokenize(input_str):
             db_p(ch, '=', '==', temp, tokens, input_str, index)
             temp = ""
             index += 1
+        elif ch == '@':
+            db_p(ch, '@', '@@', temp, tokens, input_str, index)
+            temp = ""
+            index += 1
         elif ch == '!':
             tokens.append(temp)
             temp = ""
@@ -74,7 +78,7 @@ def tokenize(input_str):
     return tokens
 
 
-print(tokenize('(C0!=200)&&(C3!=GET)&&!(C4 %% ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)'))
+print(tokenize('(C0!=200)&&(C3!=GET)&&!(C4 @@ ^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$)'))
 
 
 def opr_calc_value(op_stack, value_stack, pop_left=True):

@@ -15,17 +15,17 @@ KEY_DATA = "#Software: Microsoft Internet Information Services"
 from tabulate import tabulate
 from alg import MatchAna
 
-default_keys = {'date': True,
-                'time': True,
-                's-ip': True,
-                'cs-method': True,
-                'cs-uri-stem': True,
-                'cs-uri-query': True,
-                's-port': True,
-                'cs-username:': True,
-                'c-ip': True,
-                'cs(User-Agent)': True,
-                'sc-status': True}
+"""3.6以后的dict是有序的"""
+default_titles = {'date': "日期",
+                  'time': "时间",
+                  's-ip': "服务器 IP 地址",
+                  'cs-method': "请求方法",
+                  'cs-uri-stem': "URI 资源 ",
+                  'cs-uri-query': "URI 查询",
+                  's-port': "服务器端口",
+                  'c-ip': "客户端 IP 地址",
+                  'cs(User-Agent)': "浏览器类型",
+                  'sc-status': "状态码"}
 
 
 def g_dict(node: list):
@@ -33,6 +33,19 @@ def g_dict(node: list):
     for i, item in enumerate(node):
         table.update({"C" + str(i): item})
     return table
+
+
+"""额外的节点处理函数"""
+
+
+def extra_pro_node(node: dict):
+    n_node = {}
+    index = 0
+    values = list(node.values())
+    for k, v in default_titles.items():
+        n_node[(k + "({0})").format(v)] = values[index]
+        index += 1
+    return n_node
 
 
 def template_table(table: dict):
@@ -89,17 +102,21 @@ class IISAnalyzer(AnalyzerInterface):
                                                   "3}$来表示匹配10.115.98.网段的IP，具体根据上面提供的日志列号来匹配。\r\n")
                         print("输出的表达式为:", self.use_case)
                         print("分析开始...")
-                        csv = CSVWriter(keys)
+                        list_kv = []
+                        for k, v in default_titles.items():
+                            list_kv.append((k + "({0})").format(v))
+                        csv = CSVWriter(list_kv)
                         conditions = MatchAna.tokenize(self.use_case)
                         print(conditions)
                         break
 
                 for node_list in [line.split(" ") for line in log_lines]:
                     if node_list:
-                        node = {keys[i]: node_list[i] for i in range(len(node_list))}
+                        """只输出关心得列,在default_tiles里配置"""
+                        node = {keys[i]: node_list[i] for i in range(len(node_list)) if default_titles.get(fields[i])}
                         try:
                             if MatchAna.evaluate_expression(conditions, node):
-                                csv.write(node)
+                                csv.write(extra_pro_node(node))
                                 print(node)
                         except Exception as e:
                             print("日志不完整:", node, e)
