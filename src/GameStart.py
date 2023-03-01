@@ -15,17 +15,25 @@ from Antarctica import Antarctica
 if __name__ == "__main__":
     use_case = None
     filename = None
-    opts, args = getopt.getopt(sys.argv[1:], '-f:-t:-v', ['--filepath=', 'target_use_case=', 'version'])
+    statistic_info = None
+    opts, args = getopt.getopt(sys.argv[1:], '-f:-t:-s:-v', ['--filepath=',
+                                                             'target_use_case=',
+                                                             'statistic_info=',
+                                                             'version'])
     for opt_name, opt_value in opts:
         if opt_name in ('-f', '--filepath'):
             filename = opt_value
         if opt_name in ('-t', '--target_use_case'):
             use_case = opt_value
+        if opt_name in ('-s', '--statistic_info'):
+            statistic_info = opt_value
         if opt_name in ('-v', '--version'):
             print("[*] Version is ", cons.CURRENT_VERSION)
     if not filename:
         print("ERROR:你必须通过 -f [filepath]来提供路径")
     else:
-        ant = Antarctica(filename, use_case)
+        ant = Antarctica(filename,
+                         use_case,
+                         statistic_info)
         ant.run_all()
     exit(0)

@@ -10,9 +10,10 @@ import Constant as cons
 
 
 class Antarctica:
-    def __init__(self, path, use_case=None):
+    def __init__(self, path, use_case=None,s_case=None):
         self.file_path = path
         self.use_case = use_case
+        self.s_case = s_case
 
     def run_all(self):
         try:
@@ -25,7 +26,8 @@ class Antarctica:
         for analyzer in ar.CurrentRegister:
             if analyzer.decide_log_type(data):
                 ana = analyzer(self.file_path,
-                               self.use_case)
+                               self.use_case,
+                               self.s_case)
                 break
         if ana:
             ana.analyzing()

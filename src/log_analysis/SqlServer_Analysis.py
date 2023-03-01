@@ -23,6 +23,5 @@ class SqlServerAnalyzer(AnalyzerInterface):
         print("xx")
         return
 
-    def statistic(self):
-        print("xx")
+    def get_field_produce_conditions(self, log_lines, fields):
         return

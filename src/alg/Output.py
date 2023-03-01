@@ -11,10 +11,10 @@ import datetime
 
 
 class CSVWriter:
-    def __init__(self, key_list, file_path="result.csv"):
-        self.file_path = file_path
+    def __init__(self, key_list, file_path):
+        self.file_path = file_path + datetime.datetime.now().strftime("'%Y_%m_%d_%H_%M_%S'").strip("'") + "_result.csv"
 
-        self.file = open(file_path, 'w', newline='', encoding='utf-8')
+        self.file = open(self.file_path, 'w', newline='', encoding='utf-8')
         # 定义 CSV 写入器
         self.writer = csv.DictWriter(self.file, fieldnames=key_list)
 
@@ -25,4 +25,18 @@ class CSVWriter:
         self.writer.writerow(row_)
 
     def close(self):
-        self.close()
+        self.writer.close()
+
+    def __del__(self):
+        self.file.close()
+
+
+class JsonWriter:
+    def __init__(self, file_path):
+        self.file = open(self.file_path, 'w', newline='', encoding='utf-8')
+
+    def write(self, data):
+        self.file.write(data)
+
+    def __del__(self):
+        self.file.close()
