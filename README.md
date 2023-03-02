@@ -45,7 +45,7 @@ from log_analysis.Template_Analysis import AnalyzerInterface
 
 KEY_DATA = "#Software: Microsoft Internet Information Services"
 class IISAnalyzer(AnalyzerInterface):
-    # 实现下面的函数，用于判断对应日志是否匹配本日志分析代码，并输出对应的提示星系
+    # 实现下面的函数，用于判断对应日志是否匹配本日志分析代码，并输出对应的提示信息
     @staticmethod
     def decide_log_type(key_data):
         
@@ -143,7 +143,7 @@ x:y 表示x列的某个元素的个数，比如iis的状态列C4(假设位于C4)
 ```
 C3 >= 10 
 ```
-#### 2.筛选(假设C3列是访问IP，C4列是访问状态)访问次数大于等于10，状态成功的次数>2的日志
+#### 2.筛选(假设C3列是访问IP，C4列是访问状态(200))访问次数大于等于10，状态成功的次数>2的日志
 ```
 (C3>=10)&&((C4:200)>2)
 ```
