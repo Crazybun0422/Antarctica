@@ -6,13 +6,15 @@
 # @Software: PyCharm
 import csv
 import uuid
+import json
 
 import datetime
 
 
 class CSVWriter:
     def __init__(self, key_list, file_path):
-        self.file_path = file_path + datetime.datetime.now().strftime("'%Y_%m_%d_%H_%M_%S'").strip("'") + "_result.csv"
+        """datetime.datetime.now().strftime("'%Y_%m_%d_%H_%M_%S'").strip("'")"""
+        self.file_path = file_path + "_result.csv"
 
         self.file = open(self.file_path, 'w', newline='', encoding='utf-8')
         # 定义 CSV 写入器
@@ -33,10 +35,10 @@ class CSVWriter:
 
 class JsonWriter:
     def __init__(self, file_path):
-        self.file = open(self.file_path, 'w', newline='', encoding='utf-8')
+        self.file = open(file_path, 'w', newline='', encoding='utf-8')
 
     def write(self, data):
-        self.file.write(data)
+        json.dump(data, self.file)
 
     def __del__(self):
         self.file.close()

@@ -251,7 +251,6 @@ def evaluate_expression(conditions, value_dict, accessories=None):
         else:
             # 获取操作数对应的值
             take = True
-
             value = value_dict.get(token, None)
             if not value:
                 if value_stack and value_stack[-1]["take"]:

@@ -8,7 +8,7 @@ import os
 
 from log_analysis.Template_Analysis import AnalyzerInterface
 
-KEY_DATA = "#Software: Microsoft Internet Information Services"
+KEY_DATA = r"#Software: Microsoft Internet Information Services"
 
 
 class IISAnalyzer(AnalyzerInterface):
@@ -26,13 +26,15 @@ class IISAnalyzer(AnalyzerInterface):
             return data.split(" ")
         return []
 
-    def get_field_produce_conditions(self, log_lines, fields):
+    def get_field_produce_conditions(self, log_lines: list, fields):
         """
         :param log_lines: 存储日志的具体列表，每行日志，如果没有对它进行删减就直接返回即可
         :param fields: 用来标识每行日志title的英文名，在这个函数里
         :return:
         """
         """3.6以后的dict是有序的"""
+        self.log_ch = "IIS"
+        self.statistic_vector = "c-ip"
         self.default_titles = {'date': "日期",
                                'time': "时间",
                                's-ip': "服务器 IP 地址",
@@ -46,10 +48,18 @@ class IISAnalyzer(AnalyzerInterface):
         while log_lines[0].startswith("#") and not fields:
             """把具体的日志分区读出来"""
             fields.extend(self.__get_field(log_lines[0]))
-            log_lines = log_lines[1:]
+            log_lines.pop(0)
             if fields:
                 fields.remove("#Fields:")
                 titles_dict = {fields[i]: "C" + str(i) for i in range(len(fields))}
                 break
 
-        return titles_dict, log_lines
+        return titles_dict
+
+    def get_row_member(self, log_line: str):
+        """
+        对于每一行日志，拆解每一个对应列的member元素
+        :param log_line:
+        :return:
+        """
+        return log_line.split(" ")

@@ -5,11 +5,12 @@
 # @File : Template_Analysis.py
 # @Software: PyCharm
 import abc
-
+import chardet
 from prettytable import PrettyTable
 import Constant as cons
 from alg import MatchAna, StatisticAna
 from alg.Output import CSVWriter
+from alg.Output import JsonWriter
 
 
 def g_dict(node: list):
@@ -33,11 +34,17 @@ class AnalyzerInterface:
     def __init__(self,
                  file_path,
                  use_case,
-                 sta_case):
+                 sta_case,
+                 encoding):
         self.file_path = file_path
         self.use_case = use_case
         self.sta_case = sta_case
+        self.encoding = encoding
         self.default_titles = {}
+        # 统计向量，以哪一个英文列来做统计的主键，一般是IP
+        self.statistic_vector = ""
+        # 当前日志的标志字符串，例如IIS可以写IIS
+        self.log_ch = ""
 
     @staticmethod
     @abc.abstractmethod
@@ -46,17 +53,24 @@ class AnalyzerInterface:
 
     @abc.abstractmethod
     def get_field_produce_conditions(self, log_lines, fields):
-        raise AttributeError("Error")
+        pass
+
+    @abc.abstractmethod
+    def get_row_member(self, log_line):
+        pass
 
     def produce_conditions(self, log_lines):
-        template_table(g_dict(log_lines[0].split(" ")))
+        template_table(g_dict(self.get_row_member(log_lines[0])))
         print("用于解析的表达式为:", self.use_case)
         print("用于统计的表达式为:", self.sta_case)
         print("分析开始...")
         list_kv = []
         for k, v in self.default_titles.items():
             list_kv.append((k + "({0})").format(v))
-        csv = CSVWriter(list_kv, "IIS_")
+        if not self.log_ch:
+            raise Exception("必须设置每个日志解析类的self.log_ch")
+
+        csv = CSVWriter(list_kv, self.log_ch + "_")
         conditions = MatchAna.tokenize(self.use_case)
         conditions_sta = MatchAna.tokenize(self.sta_case)
         return conditions, conditions_sta, csv
@@ -73,7 +87,7 @@ class AnalyzerInterface:
         return n_node
 
     def analyzing(self):
-        with open(self.file_path, encoding="utf-8") as f:
+        with open(self.file_path, encoding=self.encoding) as f:
             fields = []
             title_dict = {}
             while True:
@@ -91,7 +105,7 @@ class AnalyzerInterface:
                 log_lines = data.split("\n")
 
                 if not fields:
-                    title_dict, log_lines = self.get_field_produce_conditions(log_lines, fields)
+                    title_dict = self.get_field_produce_conditions(log_lines, fields)
                     conditions, conditions_sta, csv = self.produce_conditions(log_lines)
 
                 sta_result = self.__analyzing(log_lines,
@@ -100,7 +114,10 @@ class AnalyzerInterface:
                                               conditions_sta,
                                               fields,
                                               csv)
+                jw = JsonWriter(self.log_ch + "_json")
+                jw.write(sta_result)
 
+        print("日志分析完成.")
         return
 
     def __analyzing(self, log_lines=None,
@@ -108,8 +125,7 @@ class AnalyzerInterface:
                     conditions_t=None,
                     conditions_s=None,
                     fields=None,
-                    csv=None,
-                    cares_col="c-ip"):
+                    csv=None):
         """
         :param log_lines:
         :param title_dict:
@@ -121,14 +137,15 @@ class AnalyzerInterface:
         """
         sta_result = {}
         node_result = []
-        for node_list in [line.split(" ") for line in log_lines]:
+        for line in log_lines:
+            node_list = self.get_row_member(line)
             if node_list:
                 """只输出关心得列,在default_tiles里配置"""
                 node = {list(title_dict.values())[i]: node_list[i] for i in range(len(node_list)) if
                         self.default_titles.get(fields[i])}
                 try:
                     # 每一个都要进行统计，这个统计信息是全局得
-                    StatisticAna.Statistic(sta_result, node, title_dict[cares_col])
+                    StatisticAna.Statistic(sta_result, node, title_dict[self.statistic_vector])
                     # 如果内容正则匹配
                     if MatchAna.evaluate_expression(conditions_t, node):
                         node_result.append(node)
@@ -136,7 +153,7 @@ class AnalyzerInterface:
                     print("日志不完整:", node, e)
         for item in node_result:
             if MatchAna.evaluate_expression(conditions_s,
-                                            item[title_dict[cares_col]],
+                                            sta_result[item[title_dict[self.statistic_vector]]],
                                             item):
                 csv.write(self.extra_pro_node(item))
 

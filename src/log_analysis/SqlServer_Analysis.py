@@ -19,9 +19,61 @@ class SqlServerAnalyzer(AnalyzerInterface):
             return True
         return False
 
-    def analyzing(self):
-        print("xx")
-        return
+        # 实现下面的函数:
+        # 1.fields列表里填入对应的日志列名
+        # 2.定义一个日志列名和对应的翻译字典如下面title_dict
+        # 3.一个类似下面的列名和列号的字典并返回
+        # 4.给self.log_ch 赋值一般是当前的日志类型如果是IIS就是IIS
+        # 5.定义统计维度，例如 IIS的统计维度就是客户端IP 那么就是self.statistic_vector = "c-ip"
+
+    """
+    title_dict = {
+        'date': "C0",
+        'time': "C1",
+        's-ip': "C2",
+        'cs-method': "C3",
+        'cs-uri-stem': "C4 ",
+        'cs-uri-query': "C5",
+        's-port': "C6",
+        'c-ip': "C7",
+        'cs(User-Agent)': "C8",
+        'sc-status': "C9"
+    }
+    """
 
     def get_field_produce_conditions(self, log_lines, fields):
-        return
+        self.default_titles = {
+            'date': "日期",
+            'time': "时间",
+            'action': "动作",
+            'message': '消息'
+        }
+        fields.extend(["date", "time", "action", "message"])
+        title_dict = {'date': "C0",
+                      'time': "C1",
+                      'action': "C2",
+                      'message': 'C3'}
+        self.log_ch = "sqlserver"
+        self.statistic_vector = "action"
+        return title_dict
+
+    def get_row_member(self, log_line: str):
+        """
+        对于每一行日志，拆解每一个对应列的member元素
+        :param log_line:
+        :return:
+        """
+        # sqlserver日志的消息分割符号有下面3种
+        split_chr_list = [' '*10, ' '*6, ' '*5]
+        result = []
+        message_arr = []
+        if log_line:
+            for item in split_chr_list:
+                message_arr = log_line.split(item)
+                if len(message_arr) >= 2:
+                    break
+            if len(message_arr) >= 2:
+                result.extend(message_arr[0].split(" "))
+                result.append(message_arr[1])
+            return result
+        return []
