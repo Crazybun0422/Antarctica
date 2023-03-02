@@ -54,7 +54,12 @@ class IISAnalyzer(AnalyzerInterface):
                   "so we're gonna use corresponding method to process it.")
             return True
         return False
-    # 实现下面的函数，并在fields列表里填入对应的日志列名，定义一个日志列名和对应的翻译字典，以及一个类似下面的列名和列号的字典并返回
+    # 实现下面的函数:
+    # 1.fields列表里填入对应的日志列名
+    # 2.定义一个日志列名和对应的翻译字典如下面title_dict
+    # 3.一个类似下面的列名和列号的字典并返回
+    # 4.给self.log_ch 赋值一般是当前的日志类型如果是IIS就是IIS
+    # 5.定义统计维度，例如 IIS的统计维度就是客户端IP 那么就是self.statistic_vector = "c-ip"
     """
     title_dict = {
         'date': "C0",
@@ -76,6 +81,8 @@ class IISAnalyzer(AnalyzerInterface):
         :return:
         """
         """3.6以后的dict是有序的"""
+        self.log_ch = "IIS"
+        self.statistic_vector = "c-ip"
         self.default_titles = {'date': "日期",
                                'time': "时间",
                                's-ip': "服务器 IP 地址",
@@ -89,13 +96,22 @@ class IISAnalyzer(AnalyzerInterface):
         while log_lines[0].startswith("#") and not fields:
             """把具体的日志分区读出来"""
             fields.extend(self.__get_field(log_lines[0]))
-            log_lines = log_lines[1:]
+            log_lines = log_lines.pop(0)
             if fields:
                 fields.remove("#Fields:")
                 titles_dict = {fields[i]: "C" + str(i) for i in range(len(fields))}
                 break
 
-        return titles_dict, log_lines
+        return titles_dict
+    
+    # 实现下面的函数，根据每一行日志输出分开的日志节点
+    def get_row_member(self, log_line:str):
+        """
+        对于每一行日志，拆解每一个对应列的member元素
+        :param log_line: 
+        :return: 
+        """
+        return log_line.split(" ")
 ```
 ## 启动命令行
 -f filepath（日志文件目录）  
