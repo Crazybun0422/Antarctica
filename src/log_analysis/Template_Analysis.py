@@ -134,9 +134,10 @@ class AnalyzerInterface:
                         node_result.append(node)
                 except Exception as e:
                     print("日志不完整:", node, e)
-
         for item in node_result:
-            if MatchAna.evaluate_expression(conditions_s, item[title_dict[cares_col]], item):
+            if MatchAna.evaluate_expression(conditions_s,
+                                            item[title_dict[cares_col]],
+                                            item):
                 csv.write(self.extra_pro_node(item))
 
         return sta_result
