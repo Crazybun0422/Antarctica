@@ -11,6 +11,7 @@ import Constant as cons
 from alg import MatchAna, StatisticAna
 from alg.Output import CSVWriter
 from alg.Output import JsonWriter
+from alg.TimeAna import TimeAna
 
 
 def g_dict(node: list):
@@ -35,10 +36,12 @@ class AnalyzerInterface:
                  file_path,
                  use_case,
                  sta_case,
+                 time_str,
                  encoding):
         self.file_path = file_path
         self.use_case = use_case
         self.sta_case = sta_case
+        self.time_case = time_str
         self.encoding = encoding
         self.default_titles = {}
         # 统计向量，以哪一个英文列来做统计的主键，一般是IP
@@ -63,8 +66,9 @@ class AnalyzerInterface:
 
     def produce_conditions(self, log_lines):
         template_table(g_dict(self.get_row_member(log_lines[0])))
-        print("用于解析的表达式为:", self.use_case)
-        print("用于统计的表达式为:", self.sta_case)
+        print("用于内容解析的表达式为:", self.use_case)
+        print("用于筛选统计的表达式为:", self.sta_case)
+        print("用于时间筛选的表达式为:", self.time_case)
         print("分析开始...")
         list_kv = []
         for k, v in self.default_titles.items():
@@ -75,7 +79,9 @@ class AnalyzerInterface:
         csv = CSVWriter(list_kv, self.log_ch + "_")
         conditions = MatchAna.tokenize(self.use_case)
         conditions_sta = MatchAna.tokenize(self.sta_case)
-        return conditions, conditions_sta, csv
+        time_ana = TimeAna(self.time_case)
+
+        return conditions, conditions_sta, csv, time_ana
 
     """额外的节点处理函数"""
 
@@ -108,14 +114,15 @@ class AnalyzerInterface:
 
                 if not fields:
                     title_dict = self.get_field_produce_conditions(log_lines, fields)
-                    conditions, conditions_sta, csv = self.produce_conditions(log_lines)
+                    conditions, conditions_sta, csv, time_ana = self.produce_conditions(log_lines)
 
                 sta_result = self.__analyzing(log_lines,
                                               title_dict,
                                               conditions,
                                               conditions_sta,
                                               fields,
-                                              csv)
+                                              csv,
+                                              time_ana)
                 jw = JsonWriter(self.log_ch + "_json")
                 jw.write(sta_result)
 
@@ -127,7 +134,8 @@ class AnalyzerInterface:
                     conditions_t=None,
                     conditions_s=None,
                     fields=None,
-                    csv=None):
+                    csv=None,
+                    time_ana=None):
         """
         :param log_lines:
         :param title_dict:
@@ -148,8 +156,10 @@ class AnalyzerInterface:
                 try:
                     # 每一个都要进行统计，这个统计信息是全局得
                     StatisticAna.Statistic(sta_result, node, title_dict[self.statistic_vector])
+
                     # 如果内容正则匹配
-                    if MatchAna.evaluate_expression(conditions_t, node):
+                    if MatchAna.evaluate_expression(conditions_t, node) and \
+                            time_ana.confirm(self.time_stamp_position, node):
                         node_result.append(node)
                 except Exception as e:
                     print("日志不完整:", node, e)

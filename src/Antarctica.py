@@ -11,10 +11,11 @@ import Constant as cons
 
 
 class Antarctica:
-    def __init__(self, path, use_case=None, s_case=None):
+    def __init__(self, path, use_case=None, s_case=None,time_info=None):
         self.file_path = path
         self.use_case = use_case
         self.s_case = s_case
+        self.time_info = time_info
 
     def run_all(self):
         try:
@@ -32,6 +33,7 @@ class Antarctica:
                 ana = analyzer(self.file_path,
                                self.use_case,
                                self.s_case,
+                               self.time_info,
                                encoding)
                 break
         if ana:

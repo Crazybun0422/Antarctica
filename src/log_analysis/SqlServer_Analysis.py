@@ -42,6 +42,7 @@ class SqlServerAnalyzer(AnalyzerInterface):
     """
 
     def get_field_produce_conditions(self, log_lines, fields):
+        self.time_stamp_position = ["C0", "C1"]
         self.default_titles = {
             'date': "日期",
             'time': "时间",
@@ -74,7 +75,7 @@ class SqlServerAnalyzer(AnalyzerInterface):
                     break
             if len(message_arr) >= 2:
                 c_list = message_arr[0].split(" ")
-                # 去掉垃圾.后面的时间
+                # 去掉.后面的时间
                 c_list[1] = c_list[1][0:-3]
                 result.extend(c_list)
                 result.append(message_arr[1])

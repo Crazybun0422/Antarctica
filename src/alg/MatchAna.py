@@ -257,7 +257,7 @@ def evaluate_expression(conditions, value_dict, accessories=None):
                     take = False
                     value = token
                 else:
-                    print(f"日志中的'{token}'列没有找到 ")
+                    print(f"日志中的'{token}'列没有找到，对于单列出现偶尔是正常的...")
                     return False
             """对于统计来说在如下每个日志节点中需要查询到有对应的节点，不然此次查询是没有意义的"""
             if type(value) == dict and accessories:

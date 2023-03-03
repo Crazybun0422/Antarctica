@@ -1,3 +1,3 @@
-python GameStart.py -f "E:\FUCK_LOG\iis2023-02-17_w14.log" -t "(C10==200)&&(C3==GET)" -s "(C8 > 2)"
+python GameStart.py -f "E:\FUCK_LOG\iis2023-02-17_w14.log" -t "(C10==200)&&(C3==GET)" -s "(C8 > 2)" -d "2023-02-17 05:56:26--2023-02-17 05:57:43;2023-02-17 08:31:53--2023-02-17 08:33:38"
 
 pause

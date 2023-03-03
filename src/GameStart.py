@@ -6,7 +6,6 @@
 # @Software: PyCharm
 
 
-import os
 import getopt
 import sys
 import Constant as cons
@@ -16,10 +15,12 @@ if __name__ == "__main__":
     use_case = None
     filename = None
     statistic_info = None
-    opts, args = getopt.getopt(sys.argv[1:], '-f:-t:-s:-v', ['--filepath=',
-                                                             'target_use_case=',
-                                                             'statistic_info=',
-                                                             'version'])
+    time_info = None
+    opts, args = getopt.getopt(sys.argv[1:], '-f:-t:-s:-d:-v', ['--filepath=',
+                                                                'target_use_case=',
+                                                                'statistic_info=',
+                                                                'time_info',
+                                                                'version'])
     for opt_name, opt_value in opts:
         if opt_name in ('-f', '--filepath'):
             filename = opt_value
@@ -27,6 +28,8 @@ if __name__ == "__main__":
             use_case = opt_value
         if opt_name in ('-s', '--statistic_info'):
             statistic_info = opt_value
+        if opt_name in ('-d', '--time_info'):
+            time_info = opt_value
         if opt_name in ('-v', '--version'):
             print("[*] Version is ", cons.CURRENT_VERSION)
     if not filename:
@@ -34,6 +37,7 @@ if __name__ == "__main__":
     else:
         ant = Antarctica(filename,
                          use_case,
-                         statistic_info)
+                         statistic_info,
+                         time_info)
         ant.run_all()
     exit(0)

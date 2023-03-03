@@ -34,6 +34,7 @@ class IISAnalyzer(AnalyzerInterface):
         """
         """3.6以后的dict是有序的"""
         self.log_ch = "IIS"
+        self.time_stamp_position = ["C0", "C1"]
         self.statistic_vector = "c-ip"
         self.default_titles = {'date': "日期",
                                'time': "时间",
