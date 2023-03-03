@@ -45,6 +45,8 @@ class AnalyzerInterface:
         self.statistic_vector = ""
         # 当前日志的标志字符串，例如IIS可以写IIS
         self.log_ch = ""
+        # 定义时间戳所属的列
+        self.time_stamp_position = []
 
     @staticmethod
     @abc.abstractmethod

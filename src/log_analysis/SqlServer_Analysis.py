@@ -73,7 +73,10 @@ class SqlServerAnalyzer(AnalyzerInterface):
                 if len(message_arr) >= 2:
                     break
             if len(message_arr) >= 2:
-                result.extend(message_arr[0].split(" "))
+                c_list = message_arr[0].split(" ")
+                # 去掉垃圾.后面的时间
+                c_list[1] = c_list[1][0:-3]
+                result.extend(c_list)
                 result.append(message_arr[1])
             return result
         return []
