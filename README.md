@@ -1,6 +1,6 @@
-# Antarctica
-日志分析工具集合
-- ## 代码说明：
+# Antarctica(南极洲)
+日志分析工具集合（非开发人员直接关注下面的使用说明）
+- ## 代码文件目录说明：
 ````
 E:.
 │  changelog.txt
@@ -35,7 +35,7 @@ E:.
             __init__.py
       
 ````
-## 如何添加不同的web日志分析代码：
+- ## 如何添加不同的web日志分析代码：
 ```python
 # 继承AnalyzerInterface类
 from log_analysis.Template_Analysis import AnalyzerInterface
