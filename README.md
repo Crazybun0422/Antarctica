@@ -135,6 +135,7 @@ class IISAnalyzer(AnalyzerInterface):
 | 2023-02-17  | 05:56:26  | 10.115.98.108 | GET       | /BZF/HSIS/qgdevgklxd | -            | 881    | 106.6.165.59 | Mozilla/5.0+(Windows+NT+10.0;+rv:78.0)+Gecko/20100101+Firefox/78.0 | 200       |
 | 2023-02-17  | 05:56:26  | 10.115.98.108 | GET       | /BZF/HSIS/help/     | -            | 881    | 106.6.165.59 | Mozilla/5.0+(Windows+NT+10.0;+rv:78.0)+Gecko/20100101+Firefox/78.0 | 200       |
 | 2023-02-17  | 05:56:26  | 10.115.98.108 | GET       | /BZF/HSIS/bchudflxuz | -            | 881    | 106.6.165.59 | Mozilla/5.0+(Windows+NT+10.0;+rv:78.0)+Gecko/20100101+Firefox/78.0 | 200       |
+    
 其中输出的过程中删除了相对来说无用的C7列，但C-IP对应的依然是C8列，这是为了跟程序首次输出的表格保持一一对应，方便书写表达式。
 
 对于每一种日志类型，会对弱影响的列做一些删减，但是实际对应的列号不会发生变化，
