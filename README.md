@@ -82,6 +82,8 @@ class IISAnalyzer(AnalyzerInterface):
         """
         """3.6以后的dict是有序的"""
         self.log_ch = "IIS"
+        """对应时间戳的列号，必须配置"""
+        self.time_stamp_position = ["C0", "C1"]
         self.statistic_vector = "c-ip"
         self.default_titles = {'date': "日期",
                                'time': "时间",
@@ -119,6 +121,8 @@ class IISAnalyzer(AnalyzerInterface):
 -t 匹配内容逻辑表达式
 
 -s 匹配统计逻辑表达式
+
+-d 匹配时间范围
 ```
 python.exe GameStart.py -f "E:\FUCK_LOG\iis2023-02-17_w14.log" -t "(C10==200)&&(C3==GET)&&(C4 %%%% "^/Reg/Content/scripts/app/SwfuploadContractFJ3\.js$")"
 ```
@@ -163,3 +167,11 @@ C3 >= 10
 ```
 (C3>=10)&&((C4:200)>2)
 ```
+###  三.时间范围示例
+####
+```
+-d "2023-01-29 14:11:40--2023-02-22 11:53:45;2023-02-22 15:38:40--2023-02-22 15:38:41"
+```
+表示筛选2023-01-29 14:11:40--2023-02-22 11:53:45和2023-02-22 15:38:40--2023-02-22 15:38:41间的日志。
+   
+时间开始和结束用'--'链接，而多个时间节点用';'连接。
